@@ -1,0 +1,1 @@
+BASEURL: str ='https://api-web.nhle.com/'
