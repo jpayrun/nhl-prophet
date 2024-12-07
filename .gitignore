@@ -5,6 +5,10 @@ __pycache__/
 
 nhl.db
 
+# Removing Saved Files
+*.json
+*.csv
+
 # C extensions
 *.so
 
