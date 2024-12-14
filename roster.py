@@ -10,7 +10,12 @@ import pandas as pd
 
 import globals
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    filename="./logs/rosters.log",
+    format="{asctime} - {levelname} - {message}",
+    level=logging.INFO,
+    style='{',
+    datefmt="%Y-%m-%d %H:%M",)
 
 
 class IRoster(ABC):
