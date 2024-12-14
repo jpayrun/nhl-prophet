@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from functools import lru_cache
 import json
 import logging
 from pathlib import Path
@@ -26,8 +27,10 @@ class RosterAPI(IRoster):
 
     def valid_data(self, response: Dict, key: str) -> None:
         if key not in response:
+            logging.ERROR(f"Unable to pull roster for team, missing key {key}")
             raise ValueError(f"Invalid response, missing key {key} in response")
 
+    @lru_cache
     def get_current_roster(self, team: str) -> Any:
         """
         Get the current team roster
@@ -51,6 +54,7 @@ class RosterAPI(IRoster):
             self.valid_data(data, 'forwards')
             self.valid_data(data, 'goalies')
             self.valid_data(data, 'defensemen')
+            logging.info(f"Data pulled for team {team}")
             return data
         except requests.exceptions.RequestException as e:
             logging.error(f"Unable to pull roster for team {team} error: {e}")
@@ -67,7 +71,7 @@ class RosterData:
             roster (IRoster): Roster external data interface
         """
         self.roster_api: IRoster = roster
-        self._roster_data: Any = Optional[None]
+        self._roster_data: Optional[Any] = None
 
     def roster_data(self, team: str) -> Any:
         """
@@ -107,5 +111,8 @@ class RosterData:
 if __name__ == "__main__":
     roster_api = RosterAPI()
     roster_data = RosterData(roster_api)
+    # data = roster_data.roster_data('NYR')
+    # data = roster_api.get_current_roster('NYR')
+    # print(data)
     roster_data.raw_data('NYR', Path('rangers_roster.json'))
 
