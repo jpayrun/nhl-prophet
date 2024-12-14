@@ -97,6 +97,22 @@ class TeamsData:
             teams (TeamsAPI): Teams data interface
         """
         self.teams = teams
+        self.teams_data: Optional[Any] = None
+        self.df: Optional[pd.DataFrame] = None
+
+    def pull_teams(self, refresh: bool = False) -> Any:
+        """
+        Get the teams data if None or manual refresh
+
+        Args:
+            refresh (bool, optional): Teams data from Teams object. Defaults to False.
+
+        Returns:
+            Any: Teams data
+        """
+        if self.teams_data is None or refresh:
+            self.teams_data = self.teams.pull_teams()
+        return self.teams_data
 
     def raw_results(self,
                     file_name: Path = Path('teams.json')) -> None:
@@ -108,7 +124,7 @@ class TeamsData:
         """
         try:
             logging.info("Pulling teams data")
-            data = self.teams.pull_teams()
+            data = self.pull_teams()
             file_name.write_text(json.dumps(data), encoding='utf-8')
             logging.info("Team data written to file {file_name}")
         except Exception as e:
@@ -122,7 +138,7 @@ class TeamsData:
         Returns:
             pd.DataFrame: Pandas DataFrame with teams
         """
-        result: Any = self.teams.pull_teams()
+        result: Any = self.pull_teams()
         self.df = pd.DataFrame(result['data'])
         return self.df
     
@@ -134,7 +150,8 @@ class TeamsData:
         Args:
             path (Path, optional): path to write csv file. Defaults to './data/teams.csv'.
         """
-        self.pull_teams_df()
+        if self.df is None:
+            self.pull_teams_df()
         logging.info(f"Writing csv file {path}")
         self.df.to_csv(path, index=False)
 
