@@ -11,7 +11,12 @@ import requests
 
 import globals
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    filename="./logs/teams.log",
+    format="{asctime} - {levelname} - {message}",
+    level=logging.INFO,
+    style='{',
+    datefmt="%Y-%m-%d %H:%M",)
 
 class StartEndSeason(NamedTuple):
     start: int
