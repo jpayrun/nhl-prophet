@@ -59,7 +59,7 @@ class TeamsAPI(ITeams):
             r.raise_for_status()
             return r.json()
         except requests.exceptions.RequestException as e:
-            logging.error(f"Error fetching from url: {url}")
+            logging.error(f"Error fetching team data: {e}")
             raise RuntimeError(f"Error fetching team data: {e}")
         
     @lru_cache
@@ -83,7 +83,7 @@ class TeamsAPI(ITeams):
             r.raise_for_status()
             return r.json()
         except requests.exceptions.RequestException as e:
-            logging.error(f"Error fetching from url: {url}")
+            logging.error(f"Error fetching team data: {e}")
             raise RuntimeError(f"Error fetching team season: {e}")
 
 
@@ -131,6 +131,7 @@ class TeamsData:
             path (Path, optional): path to write csv file. Defaults to './data/teams.csv'.
         """
         self.pull_teams_df()
+        logging.info(f"Writing csv file {path}")
         self.df.to_csv(path, index=False)
 
     @staticmethod
