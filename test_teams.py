@@ -37,6 +37,7 @@ class TestTeams:
 
         result = teams_api.pull_teams()
 
+        assert result == mock_data
         assert len(result['data']) == 4
 
     def test_pull_teams_missing_data_key(self, teams_api, mocker):
