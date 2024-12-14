@@ -6,7 +6,6 @@ import logging
 from pathlib import Path
 from typing import Any, List, NamedTuple, Optional, Tuple
 
-import duckdb
 import pandas as pd
 import requests
 
@@ -96,7 +95,7 @@ class TeamsData:
         Args:
             teams (ITeams): Teams data interface
         """
-        self.teams = teams
+        self.teams: ITeams = teams
         self.teams_data: Optional[Any] = None
         self.df: Optional[pd.DataFrame] = None
 
@@ -125,6 +124,7 @@ class TeamsData:
         try:
             logging.info("Pulling teams data")
             data = self.pull_teams()
+            file_name.parent.mkdir(parents=True, exist_ok=True)
             file_name.write_text(json.dumps(data), encoding='utf-8')
             logging.info("Team data written to file {file_name}")
         except Exception as e:
