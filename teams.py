@@ -106,10 +106,14 @@ class TeamsData:
         Args:
             file_name (Path, optional): file name. Defaults to 'teams.json'.
         """
-        data = self.teams.pull_teams()
-        with open(file=file_name, 'w') as file:
-            data = json.dumps(data)
-            file.write(data)
+        try:
+            logging.info("Pulling teams data")
+            data = self.teams.pull_teams()
+            file_name.write_text(json.dumps(data), encoding='utf-8')
+            logging.info("Team data written to file {file_name}")
+        except Exception as e:
+            logging.error(f"Error writing {file_name} {e}")
+            raise RuntimeError(f"Error writing results: {e}")
 
     def pull_teams_df(self) -> pd.DataFrame:
         """
