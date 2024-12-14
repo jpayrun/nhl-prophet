@@ -57,21 +57,23 @@ class TeamsAPI(ITeams):
         """
         if key not in response:
             logging.error(f"Required key {key} missing in data")
-            raise RuntimeError("Key not in data returned")
+            raise ValueError("Key not in data returned")
 
     @lru_cache
     def pull_teams(self,
+                   teams_url: str = 'https://api.nhle.com/',
                    end_point: str = 'stats/rest/en/team') -> Any:
         """
         Pull team data
 
         Args:
+            teams_url (str, optional): Url for teams data
             end_point (str, optional): Endpoint for teams data
 
         Returns:
             Any: Teams from global api as JSON object
         """
-        url = self.base_url + end_point
+        url = teams_url + end_point
         try:
             logging.info(f"Fetching data from url: {url}")
             r = requests.get(url)
@@ -224,6 +226,10 @@ class TeamsData:
 
 
 if __name__ == "__main__":
-    season = TeamsData().split_season_years(20202021)
-    print(season.start)
-    print(season.end)
+    # season = TeamsData().split_season_years(20202021)
+    # print(season.start)
+    # print(season.end)
+
+    teams = TeamsAPI()
+    data = teams.pull_teams()
+    print(data)
