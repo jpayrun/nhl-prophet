@@ -57,3 +57,16 @@ class TestTeams:
 
         with pytest.raises(ValueError) as test:
             result = teams_api.pull_teams()
+
+    def test_pull_season(self, teams_api, mocker):
+        
+        mock_data = [19261927, 19271928, 19281929, 19291930, 19301931, 19311932, 19321933,]
+
+        mock_response = mocker.MagicMock()
+        mock_response.json.return_value = mock_data
+
+        mocker.patch('requests.get', return_value=mock_response)
+
+        result = teams_api.pull_team_season('NYR')
+
+        assert result == mock_data
