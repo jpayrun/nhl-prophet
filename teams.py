@@ -89,12 +89,12 @@ class TeamsAPI(ITeams):
 
 class TeamsData:
     
-    def __init__(self, teams: TeamsAPI) -> None:
+    def __init__(self, teams: ITeams) -> None:
         """
         Constructor
 
         Args:
-            teams (TeamsAPI): Teams data interface
+            teams (ITeams): Teams data interface
         """
         self.teams = teams
         self.teams_data: Optional[Any] = None
