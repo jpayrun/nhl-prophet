@@ -2,6 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from functools import lru_cache 
 import json
+import logging
 from pathlib import Path
 from typing import Any, List, NamedTuple, Optional, Tuple
 
@@ -10,6 +11,8 @@ import pandas as pd
 import requests
 
 import globals
+
+logging.basicConfig(level=logging.INFO)
 
 class StartEndSeason(NamedTuple):
     start: int
@@ -49,12 +52,14 @@ class TeamsAPI(ITeams):
         Returns:
             Any: Teams from global api as JSON object
         """
+        url = self.base_url + end_point
         try:
-            url = self.base_url + end_point
+            logging.info(f"Fetching data from url: {url}")
             r = requests.get(url)
             r.raise_for_status()
             return r.json()
         except requests.exceptions.RequestException as e:
+            logging.error(f"Error fetching from url: {url}")
             raise RuntimeError(f"Error fetching team data: {e}")
         
     @lru_cache
@@ -71,12 +76,14 @@ class TeamsAPI(ITeams):
         Returns:
             List[int]: Seasons the team played
         """
+        url = self.base_url + end_point + triCode
         try:
-            url = self.base_url + end_point + triCode
+            logging.info(f"Fetching from url: {url}")
             r = requests.get(url)
             r.raise_for_status()
             return r.json()
         except requests.exceptions.RequestException as e:
+            logging.error(f"Error fetching from url: {url}")
             raise RuntimeError(f"Error fetching team season: {e}")
 
 
