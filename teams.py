@@ -114,7 +114,37 @@ class TeamsData:
         """
         self.teams: ITeams = teams
         self.teams_data: Optional[Any] = None
-        self.df: Optional[pd.DataFrame] = None
+        self._df: Optional[pd.DataFrame] = None
+
+    @property
+    def df(self) -> pd.DataFrame:
+        """
+        Get the df value
+
+        Raises:
+            ValueError: Not set error
+
+        Returns:
+            pd.DataFrame: Returns the DataFrame
+        """
+        if self._df is None:
+            raise ValueError("df called before initialized. Please run the pull_teams")
+        return self._df
+    
+    @df.setter
+    def df(self, value: pd.DataFrame) -> None:
+        """
+        Setter
+
+        Args:
+            value (pd.DataFrame): The value for the DataFrame
+
+        Raises:
+            TypeError: Invalid entry
+        """
+        if not isinstance(value, pd.DataFrame):
+            raise TypeError("df must be set to type pandas DataFrame")
+        self._df = value
 
     def pull_teams(self, refresh: bool = False) -> Any:
         """
