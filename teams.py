@@ -4,7 +4,7 @@ from functools import lru_cache
 import json
 import logging
 from pathlib import Path
-from typing import Any, List, NamedTuple, Optional, Tuple
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple
 
 import pandas as pd
 import requests
@@ -39,6 +39,21 @@ class TeamsAPI(ITeams):
         """
         self.base_url = base_url
 
+    def valid_response(self, response: Dict, key: str) -> None:
+        """
+        Assert key is in API response
+
+        Args:
+            response (Dict): The API response
+            key (str): Key to ensure is in response
+
+        Raises:
+            RuntimeError: If error, raise the runtime error
+        """
+        if key not in response:
+            logging.error(f"Required key {key} missing in data")
+            raise RuntimeError("Key not in data returned")
+
     @lru_cache
     def pull_teams(self,
                    end_point: str = 'stats/rest/en/team') -> Any:
@@ -56,7 +71,9 @@ class TeamsAPI(ITeams):
             logging.info(f"Fetching data from url: {url}")
             r = requests.get(url)
             r.raise_for_status()
-            return r.json()
+            data = r.json()
+            self.valid_response(data, 'data')
+            return data
         except requests.exceptions.RequestException as e:
             logging.error(f"Error fetching team data: {e}")
             raise RuntimeError(f"Error fetching team data: {e}")
