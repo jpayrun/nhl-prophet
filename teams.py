@@ -107,7 +107,7 @@ class TeamsAPI(ITeams):
             return r.json()
         except requests.exceptions.RequestException as e:
             logging.error(f"Error fetching team data: {e}")
-            raise RuntimeError(f"Error fetching team season: {e}")
+            raise RuntimeError(f"Error fetching team {triCode} season: {e}")
 
 
 class TeamsData:
@@ -232,4 +232,7 @@ if __name__ == "__main__":
 
     teams = TeamsAPI()
     data = teams.pull_teams()
+    print(data)
+
+    data = teams.pull_team_season('NYR')
     print(data)
