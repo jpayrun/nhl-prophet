@@ -1,3 +1,4 @@
+import json
 from typing import Any, List, NamedTuple, Tuple
 
 import duckdb
@@ -12,10 +13,19 @@ class StartEndSeason(NamedTuple):
 
 class Teams:
 
+    def __init__(self) -> None:
+        pass
+
     def pull_teams(self,
                    url: str = 'https://api.nhle.com/stats/rest/en/team') -> Any:
         r = requests.get(url)
         return r.json()
+    
+    def raw_results(self, file_name: str = 'teams.json') -> None:
+        data = self.pull_teams()
+        with open(file=file_name, 'w') as file:
+            data = json.dumps(data)
+            file.write(data)
 
     def pull_teams_df(self) -> pd.DataFrame:
         result: Any = self.pull_teams()
@@ -24,6 +34,7 @@ class Teams:
     
     def to_csv(self,
                path: str = './data/teams.csv') -> None:
+        self.pull_teams_df()
         self.df.to_csv(path, index=False)
                        
     @staticmethod
