@@ -33,6 +33,7 @@ class TestTeams:
         mock_response = mocker.MagicMock()
         mock_response.json.return_value = mock_data
 
+        # Patch the 'requests.get' to return the value that we want
         mocker.patch('requests.get', return_value=mock_response)
 
         result = teams_api.pull_teams()
