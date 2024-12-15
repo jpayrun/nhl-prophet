@@ -204,8 +204,7 @@ class TeamsData:
         Args:
             path (Path, optional): path to write csv file. Defaults to './data/teams.csv'.
         """
-        if self.df is None:
-            self.pull_teams_df()
+        self.add_season()
         logging.info(f"Writing csv file {path}")
         self.df.to_csv(path, index=False)
 
@@ -224,15 +223,37 @@ class TeamsData:
             raise ValueError("Date must be type int with two years concatenated in format YYYYYYYY")
         return StartEndSeason(date // 10_000, date % 10_000)
 
+    def season_years_list(self, dates: List[int]) -> List[Tuple[StartEndSeason]]:
+        result: List[StartEndSeason] = []
+        for date in dates:
+            result.append(self.split_season_years(date))
+        return result
+
+    def add_season(self) -> None:
+        """
+        Added the season to the DataFrame
+        """
+        self.pull_teams_df()
+        self.df = (self.
+                   df.
+                   assign(Seasons = lambda df_a: df_a.triCode.apply(self.teams.pull_team_season)).
+                   assign(StartEndSeason = lambda df_a: df_a.Seasons.apply(self.season_years_list))
+                   )
+
 
 if __name__ == "__main__":
     # season = TeamsData().split_season_years(20202021)
     # print(season.start)
     # print(season.end)
 
-    teams = TeamsAPI()
-    data = teams.pull_teams()
-    print(data)
+    api = TeamsAPI()
+    teams = TeamsData(api)
 
-    data = teams.pull_team_season('NYR')
-    print(data)
+    teams.to_csv()
+
+    # teams = TeamsAPI()
+    # data = teams.pull_teams()
+    # print(data)
+
+    # data = teams.pull_team_season('NYR')
+    # print(data)
