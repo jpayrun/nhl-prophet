@@ -271,8 +271,9 @@ if __name__ == "__main__":
 
     api = TeamsAPI()
     teams = TeamsData(api)
+    file_writer = WriteTeamsDataLocal(teams)
 
-    teams.to_csv()
+    file_writer.to_csv()
 
     # teams = TeamsAPI()
     # data = teams.pull_teams()
