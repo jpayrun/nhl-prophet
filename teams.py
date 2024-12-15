@@ -27,7 +27,7 @@ class ITeams(ABC):
     @abstractmethod
     def pull_teams(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     def pull_team_season(self):
         raise NotImplementedError()
@@ -84,7 +84,7 @@ class TeamsAPI(ITeams):
         except requests.exceptions.RequestException as e:
             logging.error(f"Error fetching team data: {e}")
             raise RuntimeError(f"Error fetching team data: {e}")
-        
+
     @lru_cache
     def pull_team_season(self,
                          triCode: str,
@@ -111,7 +111,7 @@ class TeamsAPI(ITeams):
 
 
 class TeamsData:
-    
+
     def __init__(self, teams: ITeams) -> None:
         """
         Constructor
@@ -137,7 +137,7 @@ class TeamsData:
         if self._df is None:
             raise ValueError("df called before initialized. Please run the pull_teams")
         return self._df
-    
+
     @df.setter
     def df(self, value: pd.DataFrame) -> None:
         """
@@ -195,7 +195,7 @@ class TeamsData:
         result: Any = self.pull_teams()
         self.df = pd.DataFrame(result['data'])
         return self.df
-    
+
     def to_csv(self,
                path: Path = Path('./data/teams.csv')) -> None:
         """
@@ -221,7 +221,7 @@ class TeamsData:
             StartEndSeason: Name tuple of start and end dates
         """
         if not  isinstance(date, int) or len(str(date)) != 8:
-            raise ValueError(f"Date must be type int with two years concatenated in format YYYYYYYY")
+            raise ValueError("Date must be type int with two years concatenated in format YYYYYYYY")
         return StartEndSeason(date // 10_000, date % 10_000)
 
 
