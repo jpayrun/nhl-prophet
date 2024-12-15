@@ -241,6 +241,26 @@ class TeamsData:
                    )
 
 
+class IWriteTeamsData(ABC):
+
+    @abstractmethod
+    def to_csv(self):
+        raise NotImplementedError()
+
+
+class WriteTeamsDataLocal(IWriteTeamsData):
+
+    def __init__(self, teams: TeamsData) -> None:
+        """
+        Constructor
+
+        Args:
+            teams (TeamsData): _description_
+        """
+        self.teams: TeamsData = teams
+
+
+
 if __name__ == "__main__":
     # season = TeamsData().split_season_years(20202021)
     # print(season.start)
