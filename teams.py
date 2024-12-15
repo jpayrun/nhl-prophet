@@ -196,18 +196,6 @@ class TeamsData:
         self.df = pd.DataFrame(result['data'])
         return self.df
 
-    def to_csv(self,
-               path: Path = Path('./data/teams.csv')) -> None:
-        """
-        Write results to csv file
-
-        Args:
-            path (Path, optional): path to write csv file. Defaults to './data/teams.csv'.
-        """
-        self.add_season()
-        logging.info(f"Writing csv file {path}")
-        self.df.to_csv(path, index=False)
-
     @staticmethod
     def split_season_years(date: int) -> StartEndSeason:
         """
@@ -259,6 +247,21 @@ class WriteTeamsDataLocal(IWriteTeamsData):
         """
         self.teams: TeamsData = teams
 
+    def set_up(self) -> None:
+        self.teams.add_season()
+
+    def to_csv(self,
+               path: Path = Path('./data/teams.csv')) -> None:
+        """
+        Write results to csv file
+
+        Args:
+            path (Path, optional): path to write csv file. Defaults to './data/teams.csv'.
+        """
+        self.set_up()
+        df = self.teams.df
+        logging.info(f"Writing csv file {path}")
+        df.to_csv(path, index=False)
 
 
 if __name__ == "__main__":
