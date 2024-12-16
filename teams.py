@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from functools import lru_cache 
+from functools import lru_cache
 import json
 import logging
 from pathlib import Path
@@ -216,7 +216,7 @@ class IWriteTeamsData(ABC):
     @abstractmethod
     def raw_results(self):
         raise NotImplementedError()
-    
+
     @abstractmethod
     def to_csv(self):
         raise NotImplementedError()
@@ -259,7 +259,6 @@ class WriteTeamsDataLocal(IWriteTeamsData):
         except Exception as e:
             logging.error("Error writing teams data")
             raise RuntimeError("Error writing teams data {e}")
-
 
     def to_csv(self,
                path: Path = Path('./data/teams.csv')) -> None:
