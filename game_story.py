@@ -113,5 +113,8 @@ class WriteGameStoryLocal(IWriteGameStory):
 
 
 if __name__ == '__main__':
-    data = GameStoryAPI().pull_data(2024020586)
-    print(data)
+    # Test game
+    game = 2024020586
+    api = GameStoryAPI()
+    data = GameStoryData(api)
+    WriteGameStoryLocal(data).raw_data(game_id=game)
