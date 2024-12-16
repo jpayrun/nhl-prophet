@@ -167,24 +167,6 @@ class TeamsData:
             self.teams_data = self.teams.pull_teams()
         return self.teams_data
 
-    def raw_results(self,
-                    file_name: Path = Path('teams.json')) -> None:
-        """
-        Write the request results into a file
-
-        Args:
-            file_name (Path, optional): file name. Defaults to 'teams.json'.
-        """
-        try:
-            logging.info("Pulling teams data")
-            data = self.pull_teams()
-            file_name.parent.mkdir(parents=True, exist_ok=True)
-            file_name.write_text(json.dumps(data), encoding='utf-8')
-            logging.info("Team data written to file {file_name}")
-        except Exception as e:
-            logging.error(f"Error writing {file_name} {e}")
-            raise RuntimeError(f"Error writing results: {e}")
-
     def pull_teams_df(self) -> pd.DataFrame:
         """
         Format teams into a pandas DataFrame
@@ -232,6 +214,10 @@ class TeamsData:
 class IWriteTeamsData(ABC):
 
     @abstractmethod
+    def raw_results(self):
+        raise NotImplementedError()
+    
+    @abstractmethod
     def to_csv(self):
         raise NotImplementedError()
 
@@ -248,7 +234,32 @@ class WriteTeamsDataLocal(IWriteTeamsData):
         self.teams: TeamsData = teams
 
     def set_up(self) -> None:
+        """
+        Set up the data for csv export
+        """
         self.teams.add_season()
+
+    def raw_results(self,
+                    file_name: Path = Path('./raw/teams.json')) -> None:
+        """
+        Write the raw results to local location
+
+        Args:
+            file_name (Path, optional): File name and path. Defaults to Path('./raw/teams.json').
+
+        Raises:
+            RuntimeError: Error writing file
+        """
+        try:
+            logging.info("Writing teams data")
+            data = teams.pull_teams()
+            file_name.parent.mkdir(parents=True, exist_ok=True)
+            file_name.write_text(data, encoding='utf-8')
+            logging.info("Finished writing file")
+        except Exception as e:
+            logging.error("Error writing teams data")
+            raise RuntimeError("Error writing teams data {e}")
+
 
     def to_csv(self,
                path: Path = Path('./data/teams.csv')) -> None:
